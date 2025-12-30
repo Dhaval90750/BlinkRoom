@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BlinkRoom</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- LOGIN -->
+        <div id="login-screen">
+            <h1 class="logo">BlinkRoom <i class="fas fa-bolt"></i></h1>
+            <p class="subtitle">Real-time. Ephemeral. Secure.</p>
+            <div class="input-group"><input type="text" id="username" placeholder="Display Name" autocomplete="off"></div>
+            <div class="input-group"><input type="text" id="room-id" placeholder="Room ID" autocomplete="off"></div>
+            <button id="join-btn" class="primary-btn">Join Room</button>
+            <p id="login-error" class="error-text"></p>
+        </div>
+
+        <!-- CHAT -->
+        <div id="chat-screen" class="hidden">
+            <!-- Header -->
+            <header class="chat-header">
+                <div class="header-info">
+                    <h2 id="room-display">Room: ...</h2>
+                    <span id="active-users-trigger" class="active-count" title="View Users">
+                        <i class="fas fa-user-friends"></i> <span id="user-count">0</span>
+                    </span>
+                </div>
+                <div class="header-actions">
+                    <button id="toggle-logs-btn" class="icon-btn"><i class="fas fa-history"></i></button>
+                    <button id="leave-btn" class="danger-btn">Leave</button>
+                </div>
+            </header>
+
+            <div class="main-content">
+                <!-- Chat Area -->
+                <div id="chat-area">
+                    <div id="message-list"></div>
+                    <div id="typing-indicator" class="hidden">Someone is typing...</div>
+                </div>
+
+                <!-- Logs Panel -->
+                <div id="logs-panel" class="hidden">
+                    <h3>Activity Log</h3>
+                    <ul id="logs-list"></ul>
+                </div>
+
+                <!-- User List Panel -->
+                <div id="user-list-panel" class="hidden">
+                    <h3>Active Users</h3>
+                    <ul id="users-ul"></ul>
+                </div>
+            </div>
+
+            <!-- Input Area -->
+            <div class="input-area">
+                <input type="file" id="photo-input" accept="image/*" class="hidden">
+                <button id="upload-btn" class="icon-btn" title="Send FlashPic"><i class="fas fa-camera"></i></button>
+                
+                <!-- Vanish Timer Dropdown -->
+                <select id="vanish-timer" title="Self-Destruct Timer">
+                    <option value="0">Off</option>
+                    <option value="10">10s</option>
+                    <option value="30">30s</option>
+                    <option value="60">1m</option>
+                </select>
+
+                <input type="text" id="message-input" placeholder="Type a message..." autocomplete="off">
+                <!-- Dynamic Square Send Button -->
+                <button id="send-btn" class="square-btn"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FLASH PIC MODAL -->
+    <div id="flash-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <img id="flash-image" src="" alt="FlashPic">
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
