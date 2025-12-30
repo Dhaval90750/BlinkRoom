@@ -68,7 +68,7 @@ io.on('connection', (socket) => {
     socket.on('joinRoom', ({ username, roomId }) => {
         if (!username || !roomId) return socket.emit('error', 'Invalid input');
         
-        const cleanRoom = roomId.trim();
+        const cleanRoom = roomId.trim().toLowerCase(); // Normalize room ID
         const baseName = username.trim();
 
 
@@ -250,7 +250,7 @@ io.on('connection', (socket) => {
     }
 });
 
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
-    console.log(`BlinkRoom V2 running on http://localhost:${PORT}`);
+    console.log(`BlinkRoom V2 running on port ${PORT}`);
 });
