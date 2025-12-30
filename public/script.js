@@ -130,6 +130,7 @@ socket.on('joined', (data) => {
     resetIdleTimer(); // Start tracking
 });
 
+socket.on('updateUserList', (users) => {
     document.getElementById('user-count').textContent = users.length;
     usersUl.innerHTML = users.map(u => `
         <li style="display:flex; justify-content:space-between; align-items:center;">
@@ -144,7 +145,6 @@ socket.on('joined', (data) => {
         </li>
     `).join('');
 });
-
 window.sendPoke = (targetUser) => {
     socket.emit('sendAlert', targetUser);
     alert(`Poked ${targetUser}!`); // Tiny feedback for sender
