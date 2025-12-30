@@ -231,6 +231,29 @@ io.on('connection', (socket) => {
         pic.viewedBy.add(socket.id);
     });
 
+    // POKE / ALERT
+    socket.on('sendAlert', (targetUsername) => {
+        const sender = users.get(socket.id);
+        if (!sender) return;
+        
+        const room = rooms.get(sender.room);
+        if (!room) return;
+
+        // Find target socket ID by username in the same room
+        let targetSocketId = null;
+        for (const sid of room.users) {
+            const u = users.get(sid);
+            if (u && u.username === targetUsername) {
+                targetSocketId = sid;
+                break;
+            }
+        }
+
+        if (targetSocketId) {
+            io.to(targetSocketId).emit('alertReceived', { from: 'Anonymous' }); // Keep it anonymous or use sender.username
+        }
+    });
+
     // DISCONNECT
     socket.on('disconnect', () => {
         const user = users.get(socket.id);

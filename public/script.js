@@ -130,16 +130,25 @@ socket.on('joined', (data) => {
     resetIdleTimer(); // Start tracking
 });
 
-socket.on('updateUserList', (users) => {
     document.getElementById('user-count').textContent = users.length;
     usersUl.innerHTML = users.map(u => `
-        <li>
-            <div class="status-dot ${u.status}" title="${u.status.toUpperCase()}"></div>
-            ${u.username} ${u.username === myUsername ? '(You)' : ''} 
-            <span style="font-size:0.75em; color:#888; margin-left:6px; font-weight:normal;">(${u.status})</span>
+        <li style="display:flex; justify-content:space-between; align-items:center;">
+            <div>
+                <div class="status-dot ${u.status}" title="${u.status.toUpperCase()}"></div>
+                ${u.username} ${u.username === myUsername ? '(You)' : ''} 
+                <span style="font-size:0.75em; color:#888; margin-left:6px; font-weight:normal;">(${u.status})</span>
+            </div>
+            ${u.username !== myUsername ? 
+                `<button onclick="sendPoke('${u.username}')" style="background:none; border:none; cursor:pointer; font-size:1.2rem;" title="Send Anonymous Poke">🔔</button>` 
+                : ''}
         </li>
     `).join('');
 });
+
+window.sendPoke = (targetUser) => {
+    socket.emit('sendAlert', targetUser);
+    alert(`Poked ${targetUser}!`); // Tiny feedback for sender
+};
 
 socket.on('typingUpdate', ({ username, isTyping }) => {
     if (isTyping) {
@@ -187,6 +196,23 @@ socket.on('flashPicContent', ({ msgId, data }) => {
     }
 });
 socket.on('flashPicError', (err) => alert(err.error));
+
+socket.on('alertReceived', (data) => {
+    // 1. Browser Notification
+    if (Notification.permission === "granted") {
+        new Notification("BlinkRoom Alert", { body: "Someone poked you anonymously!" });
+    } else if (Notification.permission !== "denied") {
+        Notification.requestPermission().then(perm => {
+            if (perm === "granted") new Notification("BlinkRoom Alert", { body: "Someone poked you anonymously!" });
+        });
+    }
+    
+    // 2. Visual Shake / Toast (fallback)
+    const chatScreen = document.getElementById('chat-screen');
+    chatScreen.style.animation = "shake 0.5s";
+    setTimeout(() => chatScreen.style.animation = "", 500);
+    alert("🔔 Someone poked you!");
+});
 
 // --- HELPERS ---
 
