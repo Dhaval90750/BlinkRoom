@@ -5,9 +5,16 @@ const path = require('path');
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server, { maxHttpBufferSize: 1e7 });
+const io = new Server(server, { 
+    maxHttpBufferSize: 1e7,
+    cors: { origin: "*" } // Allow all origins for debugging
+});
+
+const INSTANCE_ID = Math.random().toString(36).substr(2, 6).toUpperCase();
+console.log(`[Init] Server Instance Created: ${INSTANCE_ID}`);
 
 app.use(express.static(path.join(__dirname, 'public')));
+
 
 // --- DATA STRUCTURES ---
 
@@ -104,7 +111,12 @@ io.on('connection', (socket) => {
         broadcastUserList(cleanRoom);
         
         // 6. Reply to client
-        socket.emit('joined', { username: baseName, roomId: cleanRoom, logs: room.logs });
+        socket.emit('joined', { 
+            username: baseName, 
+            roomId: cleanRoom, 
+            logs: room.logs,
+            serverInstance: INSTANCE_ID 
+        });
     });
 
     // PRESENCE / STATUS

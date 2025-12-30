@@ -119,7 +119,7 @@ socket.on('loginFailed', (msg) => {
 
 socket.on('joined', (data) => {
     myUsername = data.username; // Capture assigned name (NameGuard)
-    document.getElementById('room-display').textContent = `Room: ${data.roomId}`;
+    document.getElementById('room-display').textContent = `Room: ${data.roomId} (Server: ${data.serverInstance})`;
     
     // Render existing logs
     logsList.innerHTML = '';
